@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:laza/core/constants/app_colors.dart';
 import 'package:laza/core/constants/app_strings.dart';
 import 'package:laza/logic/blocs/home/home_bloc.dart';
+import 'package:laza/presentation/widgets/bottom_button.dart';
 
 class EditProductSheet extends StatefulWidget {
   const EditProductSheet({super.key, required this.productID});
@@ -22,14 +23,12 @@ class _EditProductSheetState extends State<EditProductSheet> {
   void initState() {
     super.initState();
 
-    // Listen to changes in both text fields and enable/disable button accordingly
     _titleController.addListener(_validateFields);
     _priceController.addListener(_validateFields);
   }
 
   void _validateFields() {
     setState(() {
-      // Enable the button only if both fields have text
       _isButtonEnabled =
           _titleController.text.isNotEmpty && _priceController.text.isNotEmpty;
     });
@@ -44,95 +43,81 @@ class _EditProductSheetState extends State<EditProductSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(),
-              const Text(
-                AppStrings.editProduct,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w700,
+    return Scaffold(
+      bottomNavigationBar: BottomButton(
+          onPressed: () {
+            context.read<HomeBloc>().add(
+                  EditProductEvent(productId: widget.productID, updatedData: {
+                    "title": _titleController.text,
+                    "price": _priceController.text,
+                  }),
+                );
+          },
+          title: AppStrings.update),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(),
+                const Text(
+                  AppStrings.editProduct,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(
-                  Icons.close,
-                  size: 24.0,
-                  color: Colors.grey,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    size: 24.0,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16.0),
-          Text(
-            AppStrings.title,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-          ),
-          SizedBox(height: 8),
-          TextField(
-            controller: _titleController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(
-                    color: AppColors.borders,
-                  )),
+              ],
             ),
-          ),
-          const SizedBox(height: 16.0),
-          Text(
-            AppStrings.price,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-          ),
-          SizedBox(height: 8),
-          TextField(
-            controller: _priceController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(
-                    color: AppColors.borders,
-                  )),
+            const SizedBox(height: 16.0),
+            Text(
+              AppStrings.title,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
             ),
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 24.0),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                _isButtonEnabled
-                    ? context.read<HomeBloc>().add(
-                          EditProductEvent(
-                              productId: widget.productID,
-                              updatedData: {
-                                "title": _titleController.text,
-                                "price": _priceController.text,
-                              }),
-                        )
-                    : null;
-                Navigator.of(context).pop();
-              },
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      _isButtonEnabled ? AppColors.primary : Colors.grey)),
-              child: Text(
-                AppStrings.update,
-                style: TextStyle(
-                    color: _isButtonEnabled ? AppColors.text : AppColors.primary),
+            SizedBox(height: 8),
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(
+                      color: AppColors.borders,
+                    )),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16.0),
+            Text(
+              AppStrings.price,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+            ),
+            SizedBox(height: 8),
+            TextField(
+              controller: _priceController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(
+                      color: AppColors.borders,
+                    )),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
       ),
     );
   }

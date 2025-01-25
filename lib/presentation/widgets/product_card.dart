@@ -61,11 +61,13 @@ class ProductCard extends StatelessWidget {
                         clipBehavior: Clip.antiAlias,
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(16.0),
-                              topRight: Radius.circular(16.0),
-                            )),
-                        builder: (BuildContext context) =>
-                            EditProductSheet(productID: product.id),
+                          topLeft: Radius.circular(16.0),
+                          topRight: Radius.circular(16.0),
+                        )),
+                        builder: (BuildContext context) => SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          child: EditProductSheet(productID: product.id),
+                        ),
                       );
                     },
                     child: SvgPicture.asset(AssetsPath.editIcon),

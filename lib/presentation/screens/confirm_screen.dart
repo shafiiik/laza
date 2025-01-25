@@ -18,8 +18,9 @@ class ConfirmScreen extends StatelessWidget {
           title: AppStrings.continueShopping),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 80),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
                 AssetsPath.confirmPage,

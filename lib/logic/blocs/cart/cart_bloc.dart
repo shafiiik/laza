@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:laza/core/constants/app_strings.dart';
 import 'package:laza/data/models/cart_item.dart';
 import 'package:laza/data/repositories/cart_repository.dart';
 
@@ -21,6 +23,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   void _onAddToCart(AddToCartItem event, Emitter<CartState> emit) async {
     try {
       await cartRepository.addToCart(event.item);
+      Fluttertoast.showToast(msg: AppStrings.addedSuccessfully);
       final cartItems = cartRepository.getCartItems();
       emit(CartLoadedState(cartItems: cartItems));
     } catch (error) {
