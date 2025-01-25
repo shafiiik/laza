@@ -17,10 +17,6 @@ class AppTheme {
       ),
     ),
     textTheme: _textTheme,
-    buttonTheme: const ButtonThemeData(
-      buttonColor: AppColors.accent,
-      textTheme: ButtonTextTheme.primary,
-    ),
   );
 
   // Text Theme

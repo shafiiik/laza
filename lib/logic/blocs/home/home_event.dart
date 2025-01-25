@@ -1,21 +1,20 @@
-part of 'product_bloc.dart';
+part of 'home_bloc.dart';
 
-abstract class ProductEvent extends Equatable {
+abstract class HomeEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
 
-class LoadProductsEvent extends ProductEvent {
+class LoadHomeEvent extends HomeEvent {
   final int page;
   final int limit;
 
-  LoadProductsEvent({required this.page, this.limit = 10});
-
+  LoadHomeEvent({required this.page, this.limit = 10});
   @override
   List<Object> get props => [page, limit];
 }
 
-class EditProductEvent extends ProductEvent {
+class EditProductEvent extends HomeEvent {
   final int productId;
   final Map<String, dynamic> updatedData;
 
