@@ -10,49 +10,56 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeRepository homeRepository;
+  final int productsPerPage = 10;
 
   HomeBloc({required this.homeRepository}) : super(HomeInitialState()) {
     on<LoadHomeEvent>(_onLoadHome);
-    on<EditProductEvent>(_onEditProduct);
+    on<LoadMoreProductsEvent>(_onLoadMoreProducts);
   }
 
-  void _onLoadHome(LoadHomeEvent event, Emitter<HomeState> emit) async {
+  Future<void> _onLoadHome(LoadHomeEvent event, Emitter<HomeState> emit) async {
     try {
       emit(HomeLoadingState());
 
-      final products =
-          await homeRepository.fetchProducts();
-
+      final products = await homeRepository.fetchProducts();
       final categories = await homeRepository.fetchCategories();
 
       emit(HomeLoadedState(
         categories: categories,
-        products: products,
-        hasMore: false,
+        products: products.take(productsPerPage).toList(),
+        hasMore: products.length > productsPerPage,
+        allProducts: products,
+        currentPage: 1,
       ));
     } catch (error) {
       emit(HomeErrorState(error: error.toString()));
     }
   }
 
-  void _onEditProduct(EditProductEvent event, Emitter<HomeState> emit) async {
-    try {
-      final updatedProduct = await homeRepository.updateProduct(
-          event.productId, event.updatedData);
-
+  void _onLoadMoreProducts(
+      LoadMoreProductsEvent event, Emitter<HomeState> emit) {
+    if (state is HomeLoadedState) {
       final currentState = state as HomeLoadedState;
+      final currentPage = currentState.currentPage;
+      final allProducts = currentState.allProducts;
 
-      final updatedProducts = currentState.products.map((product) {
-        return product.id == updatedProduct.id ? updatedProduct : product;
-      }).toList();
+      final nextPage = currentPage + 1;
+      final startIndex = currentPage * productsPerPage;
+      final endIndex =
+          (startIndex + productsPerPage).clamp(0, allProducts.length);
+
+      final moreProducts = allProducts.sublist(
+        startIndex,
+        endIndex,
+      );
 
       emit(HomeLoadedState(
         categories: currentState.categories,
-        products: updatedProducts,
-        hasMore: currentState.hasMore,
+        products: [...currentState.products, ...moreProducts],
+        hasMore: endIndex < allProducts.length,
+        allProducts: allProducts,
+        currentPage: nextPage,
       ));
-    } catch (error) {
-      emit(HomeErrorState(error: error.toString()));
     }
   }
 }

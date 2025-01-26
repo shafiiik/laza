@@ -13,15 +13,25 @@ class HomeLoadedState extends HomeState {
   final List<Category> categories;
   final List<Product> products;
   final bool hasMore;
+  final List<Product> allProducts;
+  final int currentPage;
 
   HomeLoadedState({
     required this.categories,
     required this.products,
     required this.hasMore,
+    required this.allProducts,
+    required this.currentPage,
   });
 
   @override
-  List<Object> get props => [categories, products, hasMore];
+  List<Object> get props => [
+        categories,
+        products,
+        hasMore,
+        allProducts,
+        currentPage,
+      ];
 }
 
 class HomeErrorState extends HomeState {

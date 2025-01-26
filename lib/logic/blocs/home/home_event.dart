@@ -21,3 +21,6 @@ class EditProductEvent extends HomeEvent {
   @override
   List<Object> get props => [productId, updatedData];
 }
+
+class LoadMoreProductsEvent extends HomeEvent {}
+

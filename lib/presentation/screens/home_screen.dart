@@ -39,31 +39,46 @@ class HomeScreen extends StatelessWidget {
         body: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             if (state is HomeLoadedState) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      HeaderWidget(title: AppStrings.categories),
-                      CategoryCards(categories: state.categories),
-                      SizedBox(height: 8),
-                      HeaderWidget(title: AppStrings.products),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.7,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
+              return NotificationListener<ScrollNotification>(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (scrollInfo.metrics.pixels ==
+                      scrollInfo.metrics.maxScrollExtent &&
+                      state.hasMore) {
+                    context.read<HomeBloc>().add(LoadMoreProductsEvent());
+                  }
+                  return true;
+                },
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        HeaderWidget(title: AppStrings.categories),
+                        CategoryCards(categories: state.categories),
+                        SizedBox(height: 8),
+                        HeaderWidget(title: AppStrings.products),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.7,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+                          itemCount: state.products.length,
+                          itemBuilder: (context, index) {
+                            return ProductCard(product: state.products[index]);
+                          },
                         ),
-                        itemCount: state.products.length,
-                        itemBuilder: (context, index) {
-                          return ProductCard(product: state.products[index]);
-                        },
-                      ),
-                    ],
+                        if (state.hasMore)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -78,3 +93,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
