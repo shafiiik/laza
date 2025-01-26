@@ -5,9 +5,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laza/core/constants/app_colors.dart';
 import 'package:laza/core/constants/app_strings.dart';
 import 'package:laza/core/constants/assets_path.dart';
+import 'package:laza/data/models/cart_item.dart';
 import 'package:laza/logic/blocs/cart/cart_bloc.dart';
 import 'package:laza/presentation/routes/app_routes.dart';
 import 'package:laza/presentation/widgets/bottom_button.dart';
+import 'package:laza/presentation/widgets/cart_item_card.dart';
 import 'package:laza/presentation/widgets/custom_icon_button.dart';
 import 'package:laza/presentation/widgets/header_widget.dart';
 import 'package:laza/presentation/widgets/information_row.dart';
@@ -80,136 +82,7 @@ class _CartScreenState extends State<CartScreen> {
                       itemCount: cartItems.length,
                       itemBuilder: (context, index) {
                         final item = cartItems[index];
-                        return Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 16.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            // Border radius of 10
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 0.2,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    child: Image.network(
-                                      item.image,
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Container(
-                                                  width: double.infinity,
-                                                  alignment: Alignment.center,
-                                                  child: const Icon(
-                                                    Icons.broken_image,
-                                                    size: 100,
-                                                  )),
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.name,
-                                          maxLines: 2,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                '${AppStrings.price}: \$${item.price}'),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                CustomIconButton(
-                                                  icon: Icons
-                                                      .keyboard_arrow_down_outlined,
-                                                  onPressed: () {
-                                                    // context
-                                                    //     .read<CartBloc>()
-                                                    //     .add(UpdateCartItem(
-                                                    //         item: CartItem(
-                                                    //       id: item.id,
-                                                    //       name: item.name,
-                                                    //       quantity:
-                                                    //           item.quantity++,
-                                                    //       price: item.price,
-                                                    //       image: item.image,
-                                                    //     )));
-                                                  },
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 8.0),
-                                                  child:
-                                                      Text('${item.quantity}'),
-                                                ),
-                                                CustomIconButton(
-                                                  icon: Icons.keyboard_arrow_up,
-                                                  onPressed: () {
-                                                    // context
-                                                    //     .read<CartBloc>()
-                                                    //     .add(UpdateCartItem(
-                                                    //         item: CartItem(
-                                                    //       id: item.id,
-                                                    //       name: item.name,
-                                                    //       quantity:
-                                                    //           item.quantity--,
-                                                    //       price: item.price,
-                                                    //       image: item.image,
-                                                    //     )));
-                                                  },
-                                                ),
-                                                Spacer(),
-                                                CustomIconButton(
-                                                  icon: Icons.delete_outline,
-                                                  onPressed: () {
-                                                    context
-                                                        .read<CartBloc>()
-                                                        .add(RemoveCartItem(
-                                                          productId: item.id,
-                                                        ));
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
+                        return CartItemCard(item: item);
                       },
                     );
                   } else {

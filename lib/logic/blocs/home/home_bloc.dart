@@ -87,7 +87,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           hasMore: currentState.hasMore,
           allProducts: currentState.allProducts.map((product) {
             if (product.id == event.productId) {
-              return updatedProduct; // Update the product in the allProducts list too.
+              return updatedProduct;
             }
             return product;
           }).toList(),
