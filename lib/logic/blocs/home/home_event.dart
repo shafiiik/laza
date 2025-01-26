@@ -6,12 +6,10 @@ abstract class HomeEvent extends Equatable {
 }
 
 class LoadHomeEvent extends HomeEvent {
-  final int page;
-  final int limit;
+  LoadHomeEvent();
 
-  LoadHomeEvent({required this.page, this.limit = 10});
   @override
-  List<Object> get props => [page, limit];
+  List<Object> get props => [];
 }
 
 class EditProductEvent extends HomeEvent {

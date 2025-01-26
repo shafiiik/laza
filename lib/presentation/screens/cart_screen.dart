@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laza/core/constants/app_colors.dart';
 import 'package:laza/core/constants/app_strings.dart';
 import 'package:laza/core/constants/assets_path.dart';
@@ -12,8 +13,15 @@ import 'package:laza/presentation/widgets/header_widget.dart';
 import 'package:laza/presentation/widgets/information_row.dart';
 import 'package:laza/presentation/widgets/svg_icon_button.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  int cartItemsLength = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +29,17 @@ class CartScreen extends StatelessWidget {
       bottomNavigationBar: BottomButton(
         title: AppStrings.checkout,
         onPressed: () {
-          context.read<CartBloc>().add(ClearCartEvent());
-          Navigator.pushNamed(context, AppRoutes.confirmPage);
+          if (cartItemsLength == 0) {
+            Fluttertoast.showToast(msg: AppStrings.yourCartIsEmpty);
+          } else {
+            context.read<CartBloc>().add(ClearCartEvent());
+
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.confirmPage,
+              (Route<dynamic> route) => false,
+            );
+          }
         },
       ),
       backgroundColor: Colors.white,
@@ -53,6 +70,7 @@ class CartScreen extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is CartLoadedState) {
                     final cartItems = state.cartItems;
+                    cartItemsLength = cartItems.length;
                     if (cartItems.isEmpty) {
                       return const Center(
                         child: Text(AppStrings.emptyCart),
@@ -247,11 +265,14 @@ class CartScreen extends StatelessWidget {
                             ),
                             InformationRow(
                               title: AppStrings.shippingCost,
-                              subTitle: '\$10',
+                              subTitle:
+                                  state.cartItems.isEmpty ? '\$0' : '\$10',
                             ),
                             InformationRow(
                               title: AppStrings.total,
-                              subTitle: '\$${totalPrice.toStringAsFixed(2)}',
+                              subTitle: state.cartItems.isEmpty
+                                  ? '\$0'
+                                  : '\$${totalPrice.toStringAsFixed(2)}',
                             ),
                             SizedBox(height: 16),
                           ],

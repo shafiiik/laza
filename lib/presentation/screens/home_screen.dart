@@ -17,18 +17,22 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomeBloc(homeRepository: HomeRepository())
-        ..add(LoadHomeEvent(page: 1)),
+        ..add(LoadHomeEvent()),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          centerTitle: true,
           backgroundColor: Colors.white,
           title: Image.asset(AssetsPath.logo),
           actions: [
-            CustomSvgIconButton(
-              svgIconPath: AssetsPath.cartIcon,
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.cart);
-              },
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CustomSvgIconButton(
+                svgIconPath: AssetsPath.cartIcon,
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.cart);
+                },
+              ),
             )
           ],
         ),

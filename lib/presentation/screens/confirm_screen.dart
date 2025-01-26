@@ -13,7 +13,11 @@ class ConfirmScreen extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: BottomButton(
           onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.home);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.home,
+              (Route<dynamic> route) => false,
+            );
           },
           title: AppStrings.continueShopping),
       body: Center(

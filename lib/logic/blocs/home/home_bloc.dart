@@ -21,14 +21,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoadingState());
 
       final products =
-          await homeRepository.fetchProducts(event.page, event.limit);
+          await homeRepository.fetchProducts();
 
       final categories = await homeRepository.fetchCategories();
 
       emit(HomeLoadedState(
-        categories: categories, // Keep the current categories
-        products: products, // Update products
-        hasMore: products.length == event.limit,
+        categories: categories,
+        products: products,
+        hasMore: false,
       ));
     } catch (error) {
       emit(HomeErrorState(error: error.toString()));

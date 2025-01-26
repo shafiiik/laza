@@ -6,8 +6,8 @@ import 'package:laza/data/models/category_model.dart';
 import '../models/product_model.dart';
 
 class HomeRepository {
-  // Fetch products with pagination
-  Future<List<Product>> fetchProducts(int page, int limit) async {
+
+  Future<List<Product>> fetchProducts() async {
     final url = Uri.parse('${AppStrings.baseUrl}v1/products/');
     try {
       final response = await http.get(url);
@@ -41,7 +41,6 @@ class HomeRepository {
       throw Exception('Error updating product: $e');
     }
   }
-
 
   // Fetch categories
   Future<List<Category>> fetchCategories() async {
