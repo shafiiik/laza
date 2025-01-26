@@ -15,6 +15,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({required this.homeRepository}) : super(HomeInitialState()) {
     on<LoadHomeEvent>(_onLoadHome);
     on<LoadMoreProductsEvent>(_onLoadMoreProducts);
+    on<EditProductEvent>(_onEditProduct);
   }
 
   Future<void> _onLoadHome(LoadHomeEvent event, Emitter<HomeState> emit) async {
@@ -62,4 +63,44 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ));
     }
   }
+
+  void _onEditProduct(EditProductEvent event, Emitter<HomeState> emit) async {
+    if (state is HomeLoadedState) {
+      try {
+        final updatedProduct = await homeRepository.updateProduct(
+          event.productId,
+          event.updatedData,
+        );
+
+        final currentState = state as HomeLoadedState;
+
+        final updatedProducts = currentState.products.map((product) {
+          if (product.id == event.productId) {
+            return updatedProduct;
+          }
+          return product;
+        }).toList();
+
+        emit(HomeLoadedState(
+          categories: currentState.categories,
+          products: updatedProducts,
+          hasMore: currentState.hasMore,
+          allProducts: currentState.allProducts.map((product) {
+            if (product.id == event.productId) {
+              return updatedProduct; // Update the product in the allProducts list too.
+            }
+            return product;
+          }).toList(),
+          currentPage: currentState.currentPage,
+        ));
+      } catch (error) {
+        emit(HomeErrorState(error: error.toString()));
+      }
+    } else {
+      emit(HomeErrorState(
+        error: "Cannot edit product because the state is not loaded.",
+      ));
+    }
+  }
+
 }

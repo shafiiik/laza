@@ -21,6 +21,7 @@ class AppStrings {
   static const String total = "Total";
   static const String yourCartIsEmpty = "Your Cart Is Empty!";
   static const String addedSuccessfully = "Added Successfully to Cart";
+  static const String fillAllFieldsAlert = "Please fill all the fields";
   static const String confirmMessage =
       "Your order has been confirmed, we will send you confirmation email shortly.";
   static const String baseUrl = "https://api.escuelajs.co/api/";

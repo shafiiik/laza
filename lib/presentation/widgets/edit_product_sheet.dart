@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:laza/core/constants/app_colors.dart';
 import 'package:laza/core/constants/app_strings.dart';
 import 'package:laza/logic/blocs/home/home_bloc.dart';
@@ -44,14 +45,20 @@ class _EditProductSheetState extends State<EditProductSheet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomButton(
           onPressed: () {
-            context.read<HomeBloc>().add(
-                  EditProductEvent(productId: widget.productID, updatedData: {
-                    "title": _titleController.text,
-                    "price": _priceController.text,
-                  }),
-                );
+            if (_isButtonEnabled) {
+              context.read<HomeBloc>().add(
+                    EditProductEvent(productId: widget.productID, updatedData: {
+                      "title": _titleController.text,
+                      "price": _priceController.text,
+                    }),
+                  );
+              Navigator.pop(context);
+            } else {
+              Fluttertoast.showToast(msg: AppStrings.fillAllFieldsAlert);
+            }
           },
           title: AppStrings.update),
       body: Padding(
